@@ -6,263 +6,304 @@ import { useState } from "react";
 const mockCourse = {
     id: "1",
     title: "Complete TypeScript & React Masterclass",
-    description: "Master TypeScript and React from beginner to advanced. Learn modern web development with hands-on projects, real-world examples, and best practices used by top companies.",
+    description:
+        "Master TypeScript and React from beginner to advanced. Learn modern web development with hands-on projects, real-world examples, and best practices used by top companies.",
+    thumbnail: "https://img.youtube.com/vi/SOTamWNgDKc/maxresdefault.jpg",
+    videoId: "SOTamWNgDKc",
     channel: "Traversy Media",
     channelAvatar: "https://yt3.googleusercontent.com/ytc/AIdro_placeholder",
     subscribers: "2.1M",
-    totalSections: 5,
+    totalDuration: "12h 30m",
     totalLessons: 42,
     progress: 40,
-    videoId: "SOTamWNgDKc",
-    sections: [
-        { title: "Introduction", duration: "10:00", lessons: 3, startTime: 0 },
-        { title: "Chapter 1: Basics", duration: "25:30", lessons: 8, startTime: 600 },
-        { title: "Chapter 2: Intermediate", duration: "35:45", lessons: 10, startTime: 2130 },
-        { title: "Chapter 3: Advanced", duration: "45:00", lessons: 12, startTime: 4275 },
-        { title: "Conclusion", duration: "15:00", lessons: 9, startTime: 6975 },
-    ]
+    lastUpdated: "November 2024",
+    version: "1",
+    tags: ["TypeScript", "React", "Web Development", "Frontend"],
+    chapters: [
+        { title: "Introduction", duration: "10:00" },
+        { title: "Chapter 1: Basics", duration: "25:30" },
+        { title: "Chapter 2: Intermediate", duration: "35:45" },
+        { title: "Conclusion", duration: "15:00" },
+    ],
+    currentChapter: 1,
 };
 
 export default function LearnPage() {
     const { id } = useParams();
     const router = useRouter();
     const [showOutline, setShowOutline] = useState(true);
-    const [activeSection, setActiveSection] = useState(0);
-    const [completedSections, setCompletedSections] = useState<Set<number>>(new Set());
-    const [currentSrc, setCurrentSrc] = useState(
-        `https://www.youtube.com/embed/${mockCourse.videoId}?start=16479`
-    );
+    const [isFocusMode, setIsFocusMode] = useState(false);
 
-    const toggleComplete = (index: number) => {
-        setCompletedSections(prev => {
-            const next = new Set(prev);
-            next.has(index) ? next.delete(index) : next.add(index);
-            return next;
-        });
-    };
-
-    const handleSectionClick = (index: number, startTime: number) => {
-        setActiveSection(index);
-        setCurrentSrc(
-            `https://www.youtube.com/embed/${mockCourse.videoId}?start=${startTime}&autoplay=1`
+    if (isFocusMode) {
+        return (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black">
+                <button
+                    onClick={() => setIsFocusMode(false)}
+                    className="absolute right-6 top-6 z-50 rounded-full bg-white/10 p-3 text-white/50 backdrop-blur-sm transition-colors hover:bg-white/20 hover:text-white"
+                    title="Exit Focus Mode"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+                <div className="relative w-full max-w-7xl aspect-video px-4 sm:px-10">
+                    <iframe
+                        className="absolute left-0 top-0 h-full w-full"
+                        src={`https://www.youtube.com/embed/${mockCourse.videoId}?rel=0`}
+                        title={mockCourse.title}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                    ></iframe>
+                </div>
+            </div>
         );
-    };
-
-    const progressPercent = Math.round((completedSections.size / mockCourse.totalSections) * 100);
+    }
 
     return (
-        <div className="mx-auto max-w-7xl w-full px-2 sm:px-6 lg:px-8 min-h-[calc(100vh-64px)] flex flex-col">
+        <div className="space-y-4 sm:space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between w-full rounded-lg py-5">
+            <div className="flex w-full flex-col gap-4 rounded-lg py-4 sm:flex-row sm:items-center sm:justify-between sm:py-6">
                 <div className="flex items-center gap-3">
                     <button
-                        onClick={() => router.push(`/courses/${id}`)}
-                        className="p-2 hover:bg-slate-100 rounded-lg transition-colors duration-200 text-slate-500 hover:text-slate-700"
+                        onClick={() => router.back()}
+                        className="flex items-center justify-center rounded-full border border-slate-300 bg-white p-2 text-slate-700 shadow-sm transition-all duration-200 hover:bg-slate-100 hover:shadow-md"
+                        style={{ width: 40, height: 40, minWidth: 40, minHeight: 40 }}
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M19 12H5M12 5l-7 7 7 7" />
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
-                    <div>
-                        <h1 className="text-lg font-bold text-slate-800 tracking-tight leading-tight">
-                            {mockCourse.sections[activeSection].title}
+                    <div className="min-w-0">
+                        <h1 className="truncate text-xl font-bold tracking-tight text-slate-800 sm:text-2xl">
+                            {mockCourse.chapters[mockCourse.currentChapter].title}
                         </h1>
-                        <p className="text-xs text-slate-400 mt-0.5">{mockCourse.title}</p>
+                        <p className="truncate text-sm text-slate-500">
+                            {mockCourse.title}
+                        </p>
                     </div>
                 </div>
-                <div className="flex items-center gap-2">
-                    <span className="text-xs text-slate-400 font-medium hidden sm:block">
-                        {completedSections.size}/{mockCourse.totalSections} completed
-                    </span>
-                    <div className="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden hidden sm:block">
-                        <div
-                            className="h-full bg-slate-700 rounded-full transition-all duration-300"
-                            style={{ width: `${progressPercent}%` }}
-                        />
-                    </div>
-                    <span className="text-xs font-semibold text-slate-700 hidden sm:block">{progressPercent}%</span>
+
+                <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
+                    {!showOutline && (
+                        <button
+                            onClick={() => setShowOutline(true)}
+                            className="flex flex-1 items-center justify-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-all duration-200 hover:bg-slate-100 hover:shadow-md sm:flex-none sm:px-5"
+                        >
+                            <svg 
+                                xmlns="http://www.w3.org/2000/svg" 
+                                className="h-4 w-4" 
+                                viewBox="0 0 24 24" 
+                                fill="none" 
+                                stroke="currentColor" 
+                                strokeWidth="2" 
+                                strokeLinecap="round" 
+                                strokeLinejoin="round"
+                            >
+                                <rect width="18" height="18" x="3" y="3" rx="2" />
+                                <path d="M15 3v18" />
+                            </svg>
+                            Show Outline
+                        </button>
+                    )}
+                    <button
+                        onClick={() => setIsFocusMode(true)}
+                        className="flex flex-1 items-center justify-center gap-2 rounded-full bg-slate-800 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-200 hover:bg-slate-900 hover:shadow-md sm:flex-none sm:px-5"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <path d="M8 3H5a2 2 0 0 0-2 2v3" />
+                            <path d="M16 3h3a2 2 0 0 1 2 2v3" />
+                            <path d="M8 21H5a2 2 0 0 1-2-2v-3" />
+                            <path d="M16 21h3a2 2 0 0 0 2-2v-3" />
+                        </svg>
+                        Focus Mode
+                    </button>
                 </div>
             </div>
 
-            {/* Main Content */}
-            <div className="flex gap-5 pb-10">
-                {/* Left - Video + Info */}
-                <div className={`flex flex-col gap-4 transition-all duration-300 ${showOutline ? "w-3/4" : "w-full"}`}>
+            {/* Course Content */}
+            <div className="flex flex-col gap-6 pb-10 lg:flex-row">
+                {/* Left - Main Info */}
+                <div className={`flex min-w-0 flex-col gap-5 ${showOutline ? "lg:flex-[2]" : "w-full"}`}>
                     {/* Video Player */}
-                    <div className="relative w-full rounded-2xl overflow-hidden shadow-md" style={{ paddingBottom: '56.25%' }}>
+                    <div
+                        className="relative w-full overflow-hidden rounded-2xl shadow-md bg-slate-900"
+                        style={{ paddingBottom: showOutline ? "56.25%" : "52.25%" }} // 16:9 Aspect Ratio
+                    >
                         <iframe
-                            className="absolute top-0 left-0 w-full h-full border-0 outline-none"
-                            src={currentSrc}
-                            title="YouTube video player"
+                            className="absolute left-0 top-0 h-full w-full"
+                            src={`https://www.youtube.com/embed/${mockCourse.videoId}?rel=0`}
+                            title={mockCourse.title}
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen
-                        />
-                        {!showOutline && (
-                            <button
-                                onClick={() => setShowOutline(true)}
-                                className="absolute top-3 right-3 z-10 p-1.5 bg-black/50 hover:bg-black/70 text-white rounded-lg transition-all duration-200 backdrop-blur-sm"
-                                title="Show Course Outline"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" />
-                                    <path d="M9 3v18" />
-                                    <path d="M15 9l-3 3 3 3" />
-                                </svg>
-                            </button>
-                        )}
+                        ></iframe>
                     </div>
 
-                    {/* Navigation Buttons */}
-                    <div className="flex items-center justify-between px-1">
+                    {/* Chapter Navigation & Complete Button */}
+                    <div className="flex flex-wrap items-center justify-between gap-2 py-2 sm:gap-3">
+                        {/* Previous Chapter Button */}
                         <button
-                            onClick={() => activeSection > 0 && handleSectionClick(activeSection - 1, mockCourse.sections[activeSection - 1].startTime)}
-                            disabled={activeSection === 0}
-                            className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-slate-100 text-slate-700 text-sm font-medium rounded-full transition-all duration-200 border border-slate-200 disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M19 12H5M12 5l-7 7 7 7" />
-                            </svg>
-                            Previous
-                        </button>
-                        <button
-                            onClick={() => toggleComplete(activeSection)}
-                            className={`flex items-center gap-2 px-5 py-2 text-sm font-medium rounded-full transition-all duration-200 shadow-sm ${
-                                completedSections.has(activeSection)
-                                    ? "bg-emerald-500 hover:bg-emerald-600 text-white"
-                                    : "bg-slate-800 hover:bg-slate-900 text-white"
+                            onClick={() => {
+                                if (mockCourse.currentChapter > 0) {
+                                    // logic to go to previous chapter
+                                }
+                            }}
+                            disabled={mockCourse.currentChapter === 0}
+                            className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-sm transition-all duration-200 sm:px-5 ${
+                                mockCourse.currentChapter === 0
+                                    ? "cursor-not-allowed border-slate-200 bg-slate-100 text-slate-300"
+                                    : "border-slate-300 bg-white text-slate-700 hover:bg-slate-100 hover:shadow-md"
                             }`}
                         >
-                            {completedSections.has(activeSection) ? (
-                                <>
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                        <path d="M20 6L9 17l-5-5" />
-                                    </svg>
-                                    Completed
-                                </>
-                            ) : (
-                                <>
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                        <circle cx="12" cy="12" r="10" />
-                                        <path d="M20 6L9 17l-5-5" />
-                                    </svg>
-                                    Mark Complete
-                                </>
-                            )}
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-4 w-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                strokeWidth={2}
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                            </svg>
+                            {mockCourse.currentChapter === 0 ? "Start" : "Previous"}
                         </button>
+
+                        {/* Check/Uncheck Button */}
                         <button
-                            onClick={() => activeSection < mockCourse.sections.length - 1 && handleSectionClick(activeSection + 1, mockCourse.sections[activeSection + 1].startTime)}
-                            disabled={activeSection === mockCourse.sections.length - 1}
-                            className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-slate-100 text-slate-700 text-sm font-medium rounded-full transition-all duration-200 border border-slate-200 disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
+                            onClick={() => {
+                                // logic to check/uncheck chapter
+                            }}
+                            className="flex items-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-all duration-200 hover:bg-slate-100 hover:shadow-md sm:px-5"
                         >
-                            Next
-                            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M5 12h14M12 5l7 7-7 7" />
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-4 w-4"
+                                fill={false ? "currentColor" : "none"}
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                strokeWidth={2}
+                            >
+                                <rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" fill="none" />
+                                <path
+                                    d="M8 12l3 3 5-5"
+                                    stroke="currentColor"
+                                    strokeWidth={2}
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    fill="none"
+                                />
+                            </svg>
+                            Mark Complete
+                        </button>
+
+                        {/* Next Chapter Button */}
+                        <button
+                            onClick={() => {
+                                if (mockCourse.currentChapter < mockCourse.chapters.length - 1) {
+                                    // logic to go to next chapter
+                                }
+                            }}
+                            disabled={mockCourse.currentChapter === mockCourse.chapters.length - 1}
+                            className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium shadow-sm transition-all duration-200 sm:px-5 ${
+                                mockCourse.currentChapter === mockCourse.chapters.length - 1
+                                    ? "cursor-not-allowed border-slate-200 bg-slate-100 text-slate-300"
+                                    : "border-slate-300 bg-white text-slate-700 hover:bg-slate-100 hover:shadow-md"
+                            }`}
+                        >
+                            {mockCourse.currentChapter === mockCourse.chapters.length - 1 ? "Finally" : "Next"}
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-4 w-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                strokeWidth={2}
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                             </svg>
                         </button>
                     </div>
-
-                    {/* Course Info */}
-                    <div className="flex flex-col gap-3 pt-1">
-                        <h2 className="text-2xl font-bold text-slate-800 tracking-tight">{mockCourse.title}</h2>
-                        <p className="text-sm text-slate-500 leading-relaxed">{mockCourse.description}</p>
-                    </div>
-
-                    {/* Channel Info */}
-                    <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
-                        <img
-                            src={mockCourse.channelAvatar}
-                            alt={mockCourse.channel}
-                            className="w-11 h-11 rounded-full object-cover ring-2 ring-slate-200"
-                            onError={(e) => {
-                                (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(mockCourse.channel)}&background=1e293b&color=fff`;
-                            }}
-                        />
-                        <div className="flex flex-col gap-0.5">
-                            <span className="text-sm font-semibold text-slate-800">{mockCourse.channel}</span>
-                            <span className="text-xs text-slate-400">{mockCourse.subscribers} subscribers</span>
-                        </div>
-                        <div className="ml-auto flex items-center gap-2">
-                            <button
-                                onClick={() => router.push(`/courses/${id}`)}
-                                className="px-5 py-2 bg-white hover:bg-slate-100 text-slate-700 text-sm font-medium rounded-full transition-all duration-200 shadow-sm hover:shadow-md border border-slate-200"
-                            >
-                                Course Overview
-                            </button>
-                            <button className="px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white text-sm font-medium rounded-full transition-all duration-200 shadow-sm hover:shadow-md">
-                                Visit Channel
-                            </button>
-                        </div>
+                    {/* Title & Description */}
+                    <div className="flex flex-col gap-3">
+                        <h2 className="text-xl font-bold tracking-tight text-slate-800 sm:text-2xl">
+                            {mockCourse.title}
+                        </h2>
+                        <p className="text-sm leading-relaxed text-slate-500">
+                            {mockCourse.description}
+                        </p>
                     </div>
                 </div>
-
+                
                 {/* Right - Course Outline */}
                 {showOutline && (
-                    <div className="w-1/4 flex flex-col bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden self-start sticky top-6">
-                        <div className="px-5 py-4 border-b border-slate-200 flex items-start justify-between gap-3">
-                            <div className="flex-1 min-w-0">
-                                <h2 className="text-sm font-bold text-slate-800 tracking-tight">Course Outline</h2>
-                                <p className="text-xs text-slate-400 mt-0.5">
-                                    {mockCourse.totalSections} sections • {mockCourse.totalLessons} lessons
-                                </p>
-                                <div className="mt-2 flex items-center gap-2">
-                                    <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="w-full flex-col gap-4 lg:w-1/4">
+                        <div className="flex flex-col gap-4">
+                            {/* Course Outline */}
+                            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                                <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+                                    <h2 className="text-sm font-bold tracking-tight text-slate-800">
+                                        Course Outline
+                                    </h2>
+                                    <button 
+                                        onClick={() => setShowOutline(false)}
+                                        className="text-slate-400 transition-colors hover:text-slate-600"
+                                        title="Hide Outline"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <rect width="18" height="18" x="3" y="3" rx="2" />
+                                            <path d="M15 3v18" />
+                                            <path d="m8 9 3 3-3 3" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div className="flex flex-col divide-y divide-slate-100">
+                                    {mockCourse.chapters.map((section, index) => (
                                         <div
-                                            className="h-full bg-slate-700 rounded-full transition-all duration-300"
-                                            style={{ width: `${progressPercent}%` }}
-                                        />
-                                    </div>
-                                    <span className="text-xs text-slate-400 font-mono flex-shrink-0">{progressPercent}%</span>
+                                            key={index}
+                                            className="group flex cursor-pointer items-center gap-3 px-4 py-3.5 transition-colors duration-150 hover:bg-slate-50 sm:px-5"
+                                            onClick={() => router.push(`/courses/${id}/learn`)}
+                                        >
+                                            <input
+                                                type="checkbox"
+                                                className="h-4 w-4 flex-shrink-0 cursor-pointer rounded accent-slate-700"
+                                                onClick={(e) => e.stopPropagation()}
+                                            />
+                                            <div className="flex min-w-0 flex-1 items-center justify-between gap-2">
+                                                <div className="flex min-w-0 flex-col">
+                                                    <span className="text-[11px] uppercase tracking-wide text-slate-400">
+                                                        Chapter {index + 1}
+                                                    </span>
+                                                    <span className="truncate text-sm font-medium text-slate-600 transition-colors group-hover:text-slate-900">
+                                                        {section.title}
+                                                    </span>
+                                                </div>
+                                                <span className="flex-shrink-0 font-mono text-xs text-slate-400">
+                                                    {section.duration}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
-                            <button
-                                onClick={() => setShowOutline(false)}
-                                className="p-1.5 hover:bg-slate-100 text-slate-400 hover:text-slate-600 rounded-lg transition-all duration-200 flex-shrink-0"
-                                title="Hide Course Outline"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" />
-                                    <path d="M9 3v18" />
-                                    <path d="M12 9l3 3-3 3" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div className="flex flex-col divide-y divide-slate-100 overflow-y-auto max-h-[calc(56.25vw*0.67)]">
-                            {mockCourse.sections.map((section, index) => (
-                                <div
-                                    key={index}
-                                    className={`flex items-center gap-3 px-5 py-3.5 transition-colors duration-150 cursor-pointer group ${
-                                        activeSection === index
-                                            ? "bg-slate-50 border-l-2 border-slate-700"
-                                            : "hover:bg-slate-50"
-                                    }`}
-                                    onClick={() => handleSectionClick(index, section.startTime)}
-                                >
-                                    <input
-                                        type="checkbox"
-                                        checked={completedSections.has(index)}
-                                        className="w-4 h-4 rounded accent-slate-700 cursor-pointer flex-shrink-0"
-                                        onChange={() => toggleComplete(index)}
-                                        onClick={(e) => e.stopPropagation()}
-                                    />
-                                    <div className="flex flex-1 justify-between items-center gap-2 min-w-0">
-                                        <div className="flex flex-col min-w-0">
-                                            <span className={`text-sm font-medium transition-colors truncate ${
-                                                activeSection === index
-                                                    ? "text-slate-900"
-                                                    : "text-slate-600 group-hover:text-slate-900"
-                                            }`}>
-                                                {section.title}
-                                            </span>
-                                            <span className="text-xs text-slate-400">{section.lessons} lessons</span>
-                                        </div>
-                                        <span className="text-xs text-slate-400 font-mono flex-shrink-0">{section.duration}</span>
-                                    </div>
-                                </div>
-                            ))}
                         </div>
                     </div>
                 )}
             </div>
         </div>
-    );
+    )
 }

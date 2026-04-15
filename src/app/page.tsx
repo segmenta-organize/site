@@ -1,58 +1,51 @@
 "use client";
 
-import React from 'react';
-import { Navbar } from '../components/navbar';
+import React from "react";
 
 export default function Page() {
     return (
-        <div className="mx-auto max-w-7xl relative min-h-[calc(100vh-64px)] text-black flex flex-col items-center justify-center overflow-hidden">
-            <div className="relative z-10 max-w-4xl mx-auto text-center flex flex-col items-center gap-6">
-                <span className="inline-flex items-center gap-2 px-3 py-1 text-xs font-semibold tracking-widest uppercase border border-black rounded-full">
+        <div className="relative mx-auto flex min-h-[calc(100vh-64px)] max-w-7xl flex-col items-center justify-center overflow-hidden px-4 text-slate-800 sm:px-6 lg:px-8">
+            <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center gap-6 text-center">
+                <span className="inline-flex items-center gap-2 rounded-full border border-slate-400 px-3 py-1 text-xs font-bold uppercase tracking-widest text-slate-700">
                     📝 Structured Learning
                 </span>
 
                 {/* Heading */}
-                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-tight tracking-tight">
+                <h1 className="text-4xl font-black leading-tight tracking-tight text-slate-800 sm:text-5xl md:text-6xl lg:text-7xl">
                     Turn Long Videos Into
-                    <span className="block relative mt-1">
-                        <span className="relative">
-                            Structured Learning.
-                        </span>
+                    <span className="relative mt-1 block">
+                        <span className="relative">Structured Learning.</span>
                     </span>
                 </h1>
 
                 {/* Description */}
-                <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl leading-relaxed">
+                <p className="max-w-2xl text-sm leading-relaxed text-slate-500 sm:text-base md:text-lg">
                     Segmenta transforms lengthy YouTube tutorials into organized, chapter-based courses.
                     Learn smarter with clear sections, track your progress, and focus on what truly matters —
-                    <span className="font-semibold text-black"> without scrubbing through hours of video.</span>
+                    <span className="font-semibold text-slate-800"> without scrubbing through hours of video.</span>
                 </p>
 
                 {/* CTA Buttons */}
-                <div className="flex flex-col sm:flex-row items-center gap-3 mt-2">
+                <div className="mt-2 flex flex-col items-center gap-3 sm:flex-row">
                     <button
-                        className="group flex items-center gap-2 px-6 py-3 bg-black text-white text-sm font-semibold rounded-full hover:bg-gray-900 transition-all duration-200 shadow-lg hover:shadow-xl"
-                        onClick={() => window.location.href = '/courses'}>
-                        Let's Start
-                        <span className="group-hover:translate-x-1 transition-transform duration-200">→</span>
-                    </button>
-                    <button
-                        className="px-6 py-3 border border-black text-black text-sm font-semibold rounded-full hover:bg-black hover:text-white transition-all duration-200"
+                        className="group flex items-center gap-2 rounded-full bg-slate-800 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-slate-900 hover:shadow-md"
+                        onClick={() => (window.location.href = "/courses")}
                     >
-                        See How It Works
+                        Let's Start
+                        <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
                     </button>
                 </div>
 
                 {/* Stats row */}
-                <div className="flex items-center gap-8 mt-4 pt-6 w-full justify-center">
+                <div className="mt-4 flex w-full items-center justify-center gap-8 pt-6">
                     {[
                         { value: "10x", label: "Faster Learning" },
                         { value: "100%", label: "Free to Use" },
                         { value: "∞", label: "Videos Supported" },
                     ].map((stat) => (
                         <div key={stat.label} className="flex flex-col items-center gap-1">
-                            <span className="text-xl font-black">{stat.value}</span>
-                            <span className="text-xs text-gray-500 tracking-wide">{stat.label}</span>
+                            <span className="text-xl font-black text-slate-800">{stat.value}</span>
+                            <span className="text-xs tracking-wide text-slate-400">{stat.label}</span>
                         </div>
                     ))}
                 </div>
